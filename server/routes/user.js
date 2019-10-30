@@ -7,33 +7,33 @@ const app = express()
 app.get('/user', function (req, res) {
     let from = Number(req.query.from ? req.query.from : 0);
     let limit = Number(req.query.limit ? req.query.limit : 10);
-    
-    User.find({state:true},'role name email img state google') //this string is optional
-    .skip(from)
-    .limit(limit)
-    .exec((err,users)=>{
-        if (err) {
-            return res.status(400).json({
-                ok: false,
-                err: err
-            });
-        }
 
-        User.count({},(err,number)=>{
+    User.find({ state: true }, 'role name email img state google') //this string is optional
+        .skip(from)
+        .limit(limit)
+        .exec((err, users) => {
             if (err) {
                 return res.status(400).json({
                     ok: false,
                     err: err
                 });
             }
-            res.json({
-                ok: true,
-                users: users,
-                total: number
+
+            User.count({ state: true }, (err, number) => {
+                if (err) {
+                    return res.status(400).json({
+                        ok: false,
+                        err: err
+                    });
+                }
+                res.json({
+                    ok: true,
+                    users: users,
+                    total: number
+                })
             })
-        })
-        
-    });
+
+        });
 
 })
 
@@ -64,9 +64,9 @@ app.post('/user', function (req, res) {
 
 app.put('/user/:id', function (req, res) {
     let id = req.params.id;
-    let body = _.pick(req.body, ['name','email','img','role','state']);
+    let body = _.pick(req.body, ['name', 'email', 'img', 'role', 'state']);
 
-    User.findByIdAndUpdate(id, body, { new: true, runValidators: true ,context: 'query'}, (err, userDB) => {
+    User.findByIdAndUpdate(id, body, { new: true, runValidators: true, context: 'query' }, (err, userDB) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
@@ -82,28 +82,45 @@ app.put('/user/:id', function (req, res) {
 });
 
 app.delete('/user/:id', function (req, res) {
+    
     let id = req.params.id;
-    User.findByIdAndRemove(id,(err,deletedUser)=>{
+    let stateDelete = { state: false };
+
+    User.findByIdAndUpdate(id, stateDelete, { new: true, context: 'query' }, (err, userDB) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
                 err: err
             });
         }
-        if(!deletedUser){
-            return res.status(400).json({
-                ok: false,
-                err: {
-                    message: "user not found"
-                }
-            });
-        }
         res.json({
-            ok:true,
-            user: deletedUser
+            ok: true,
+            user: userDB
         });
-
     });
+
+    // User.findByIdAndRemove(id,(err,deletedUser)=>{
+    //     if (err) {
+    //         return res.status(400).json({
+    //             ok: false,
+    //             err: err
+    //         });
+    //     }
+    //     if(!deletedUser){
+    //         return res.status(400).json({
+    //             ok: false,
+    //             err: {
+    //                 message: "user not found"
+    //             }
+    //         });
+    //     }
+    //     res.json({
+    //         ok:true,
+    //         user: deletedUser
+    //     });
+
+    // });
+
 });
 
 module.exports = app;
