@@ -7,7 +7,8 @@ const app = express()
 app.get('/user', function (req, res) {
     let from = Number(req.query.from ? req.query.from : 0);
     let limit = Number(req.query.limit ? req.query.limit : 10);
-    User.find({})
+    
+    User.find({state:true},'role name email img state google') //this string is optional
     .skip(from)
     .limit(limit)
     .exec((err,users)=>{
@@ -17,10 +18,21 @@ app.get('/user', function (req, res) {
                 err: err
             });
         }
-        res.json({
-            ok: true,
-            users: users
+
+        User.count({},(err,number)=>{
+            if (err) {
+                return res.status(400).json({
+                    ok: false,
+                    err: err
+                });
+            }
+            res.json({
+                ok: true,
+                users: users,
+                total: number
+            })
         })
+        
     });
 
 })
@@ -67,10 +79,31 @@ app.put('/user/:id', function (req, res) {
         });
     });
 
-})
+});
 
-app.delete('/user', function (req, res) {
-    res.json('delete user')
-})
+app.delete('/user/:id', function (req, res) {
+    let id = req.params.id;
+    User.findByIdAndRemove(id,(err,deletedUser)=>{
+        if (err) {
+            return res.status(400).json({
+                ok: false,
+                err: err
+            });
+        }
+        if(!deletedUser){
+            return res.status(400).json({
+                ok: false,
+                err: {
+                    message: "user not found"
+                }
+            });
+        }
+        res.json({
+            ok:true,
+            user: deletedUser
+        });
+
+    });
+});
 
 module.exports = app;
