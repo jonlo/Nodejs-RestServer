@@ -15,8 +15,6 @@ app.get('/', function (req, res) {
     res.json('Working')
 })
 
-
-
 //Localhost mongodb://localhost/cafe
 mongoose.connect(process.env.urlDB, {
     useNewUrlParser: true,

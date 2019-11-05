@@ -4,7 +4,9 @@ const bcryp = require('bcrypt');
 const _ = require('underscore');
 const app = express()
 
-app.get('/user', function (req, res) {
+const {veryfyToken} = require ('../middlewares/authentication');
+
+app.get('/user',veryfyToken, (req, res) => {
     let from = Number(req.query.from ? req.query.from : 0);
     let limit = Number(req.query.limit ? req.query.limit : 10);
 
@@ -37,7 +39,7 @@ app.get('/user', function (req, res) {
 
 })
 
-app.post('/user', function (req, res) {
+app.post('/user',veryfyToken, function (req, res) {
     let body = req.body;
     let user = new User({
         name: body.name,
@@ -62,7 +64,7 @@ app.post('/user', function (req, res) {
 
 })
 
-app.put('/user/:id', function (req, res) {
+app.put('/user/:id',veryfyToken, function (req, res) {
     let id = req.params.id;
     let body = _.pick(req.body, ['name', 'email', 'img', 'role', 'state']);
 
@@ -81,7 +83,7 @@ app.put('/user/:id', function (req, res) {
 
 });
 
-app.delete('/user/:id', function (req, res) {
+app.delete('/user/:id',veryfyToken, function (req, res) {
     
     let id = req.params.id;
     let stateDelete = { state: false };
@@ -98,29 +100,6 @@ app.delete('/user/:id', function (req, res) {
             user: userDB
         });
     });
-
-    // User.findByIdAndRemove(id,(err,deletedUser)=>{
-    //     if (err) {
-    //         return res.status(400).json({
-    //             ok: false,
-    //             err: err
-    //         });
-    //     }
-    //     if(!deletedUser){
-    //         return res.status(400).json({
-    //             ok: false,
-    //             err: {
-    //                 message: "user not found"
-    //             }
-    //         });
-    //     }
-    //     res.json({
-    //         ok:true,
-    //         user: deletedUser
-    //     });
-
-    // });
-
 });
 
 module.exports = app;
