@@ -3,6 +3,7 @@ const User = require('../models/user');
 const bcryp = require('bcrypt');
 const _ = require('underscore');
 const app = express()
+const jwt = require('jsonwebtoken');
 
 const {veryfyToken} = require ('../middlewares/authentication');
 
@@ -39,7 +40,7 @@ app.get('/user',veryfyToken, (req, res) => {
 
 })
 
-app.post('/user',veryfyToken, function (req, res) {
+app.post('/user', function (req, res) {
     let body = req.body;
     let user = new User({
         name: body.name,
@@ -55,10 +56,15 @@ app.post('/user',veryfyToken, function (req, res) {
                 err: err
             });
         }
-
+        let token = jwt.sign({
+            user: userDB,
+        }, process.env.SEED, {
+            expiresIn: process.env.TOKEN_EXPIRES
+        });
         res.json({
             ok: true,
-            user: userDB
+            user: userDB,
+            token:token
         });
     });
 
