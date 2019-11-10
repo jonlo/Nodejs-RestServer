@@ -5,6 +5,7 @@ const _ = require('underscore');
 const app = express()
 
 const {veryfyToken} = require ('../middlewares/authentication');
+const {veryfyAdminRole} = require ('../middlewares/authentication');
 
 app.get('/user',veryfyToken, (req, res) => {
     let from = Number(req.query.from ? req.query.from : 0);
@@ -39,7 +40,7 @@ app.get('/user',veryfyToken, (req, res) => {
 
 })
 
-app.post('/user',veryfyToken, function (req, res) {
+app.post('/user',[veryfyToken,veryfyAdminRole], function (req, res) {
     let body = req.body;
     let user = new User({
         name: body.name,

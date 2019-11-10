@@ -16,10 +16,26 @@ let veryfyToken = (req, res, next) => {
         req.user = decoded.user;
         next();
     });
-   
 
 };
 
+let veryfyAdminRole = (req, res, next) => {
+    let user = req.user;
+    if(user.role !== 'ADMIN_ROLE'){
+        let err = "user should be an admin";
+        return res.status(401).json({
+            ok: false,
+            err: err
+        });
+    }else{
+        next();
+    }
+  
+        
+   
+};
+
 module.exports = {
-    veryfyToken
+    veryfyToken,
+    veryfyAdminRole
 }
