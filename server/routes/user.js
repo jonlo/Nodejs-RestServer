@@ -3,6 +3,7 @@ const User = require('../models/user');
 const bcryp = require('bcrypt');
 const _ = require('underscore');
 const app = express()
+const jwt = require('jsonwebtoken');
 
 const {verifyToken} = require ('../middlewares/authentication');
 const {verifyAdminRole} = require ('../middlewares/authentication');
@@ -40,7 +41,11 @@ app.get('/user',verifyToken, (req, res) => {
 
 })
 
+<<<<<<< HEAD
 app.post('/user',[verifyToken,verifyAdminRole], function (req, res) {
+=======
+app.post('/user', function (req, res) {
+>>>>>>> 4bdc6f487d3225de9b651ae0c4d49489b7a2d286
     let body = req.body;
     let user = new User({
         name: body.name,
@@ -56,10 +61,15 @@ app.post('/user',[verifyToken,verifyAdminRole], function (req, res) {
                 err: err
             });
         }
-
+        let token = jwt.sign({
+            user: userDB,
+        }, process.env.SEED, {
+            expiresIn: process.env.TOKEN_EXPIRES
+        });
         res.json({
             ok: true,
-            user: userDB
+            user: userDB,
+            token:token
         });
     });
 
