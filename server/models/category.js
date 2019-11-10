@@ -9,7 +9,7 @@ let categorySchema = new Schema({
         unique: [true, 'categories must be unique']
     },
     user: {
-        type: Schema.type.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'User'
     },
 });
