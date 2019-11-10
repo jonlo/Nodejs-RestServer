@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken')
 //Verificar token
 //=====================
 
-let veryfyToken = (req, res, next) => {
+let verifyToken = (req, res, next) => {
     let token = req.get('token'); // recuperar datos del header
     jwt.verify(token,process.env.SEED,(err, decoded)=>{
         if(err){
@@ -19,7 +19,7 @@ let veryfyToken = (req, res, next) => {
 
 };
 
-let veryfyAdminRole = (req, res, next) => {
+let verifyAdminRole = (req, res, next) => {
     let user = req.user;
     if(user.role !== 'ADMIN_ROLE'){
         let err = "user should be an admin";
@@ -30,12 +30,9 @@ let veryfyAdminRole = (req, res, next) => {
     }else{
         next();
     }
-  
-        
-   
 };
 
 module.exports = {
-    veryfyToken,
-    veryfyAdminRole
+    verifyToken,
+    verifyAdminRole
 }
