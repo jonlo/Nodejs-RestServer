@@ -75,10 +75,10 @@ moveFileToFolder = (uploadedFile, id, type, extension, res) => {
         }
         switch (type) {
             case 'user':
-                userImage(id, res, fileName);
+                setUserImage(id, res, fileName);
                 break;
             case 'product':
-                productImage(id, res, fileName);
+                setProductImage(id, res, fileName);
                 break;
             default:
                 break;
@@ -87,7 +87,7 @@ moveFileToFolder = (uploadedFile, id, type, extension, res) => {
     });
 }
 
-userImage = (id, res, fileName) => {
+setUserImage = (id, res, fileName) => {
     User.findById(id, (err, userDB) => {
         if (err) {
             removeFile(fileName, "user");
@@ -125,7 +125,7 @@ userImage = (id, res, fileName) => {
     })
 }
 
-productImage = (id, res, fileName) => {
+setProductImage = (id, res, fileName) => {
     Product.findById(id, (err, productDB) => {
         if (err) {
             removeFile(fileName, "product");
