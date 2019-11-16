@@ -5,8 +5,6 @@ const { verifyToken } = require('../middlewares/authentication');
 let app = express();
 let Product = require('../models/product');
 
-//Obtener todos los productos
-
 app.get('/product', verifyToken, (req, res) => {
     let from = Number(req.query.from ? req.query.from : 0);
     let limit = Number(req.query.limit ? req.query.limit : 10);
@@ -22,7 +20,6 @@ app.get('/product', verifyToken, (req, res) => {
                     err: err
                 });
             }
-
             Product.count({ available: true }, (err, number) => {
                 if (err) {
                     return res.status(400).json({
@@ -36,13 +33,9 @@ app.get('/product', verifyToken, (req, res) => {
                     total: number
                 })
             })
-
         });
-
-
 });
 
-//get one product by id
 app.get('/product/:id', verifyToken, (req, res) => {
     let id = req.params.id;
     Product.findById(id)
@@ -60,11 +53,32 @@ app.get('/product/:id', verifyToken, (req, res) => {
                 product: productDB
             });
         });
+});
+
+app.get('/product/find/:findStr', verifyToken, (req, res) => {
+    let findStr = req.params.findStr;
+
+    let regex = new RegExp(findStr, 'i')
+
+    Product.find({ name: regex })
+        .populate('user', 'name email')
+        .populate('category', 'description')
+        .exec((err, products) => {
+            if (err) {
+                return res.status(400).json({
+                    ok: false,
+                    err: err
+                });
+            }
+            res.json({
+                ok: true,
+                products: products
+            })
+
+        });
 
 });
 
-
-//create one product
 app.post('/product', verifyToken, (req, res) => {
     let body = req.body;
     let product = new Product({
@@ -87,10 +101,8 @@ app.post('/product', verifyToken, (req, res) => {
             product: product
         });
     });
-
 });
 
-//Update one product
 app.put('/product/:id', verifyToken, (req, res) => {
     let id = req.params.id;
 
@@ -108,7 +120,6 @@ app.put('/product/:id', verifyToken, (req, res) => {
     });
 });
 
-//Delete one product by modifying avaliable
 app.delete('/product/:id', verifyToken, (req, res) => {
     let id = req.params.id;
     let availableDelete = { available: false };
@@ -124,7 +135,6 @@ app.delete('/product/:id', verifyToken, (req, res) => {
             product: productDB
         });
     });
-
 });
 
 module.exports = app;

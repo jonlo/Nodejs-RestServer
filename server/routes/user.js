@@ -41,7 +41,7 @@ app.get('/user', verifyToken, (req, res) => {
 
 })
 
-app.post('/user', [verifyToken, verifyAdminRole], function (req, res) {
+app.post('/user', [verifyAdminRole], function (req, res) {
     let body = req.body;
     let user = new User({
         name: body.name,
