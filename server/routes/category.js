@@ -5,9 +5,13 @@ let app = express();
 let Category = require('../models/category');
 
 app.get('/category', verifyToken, (req, res) => { //show all categories
-    Category.find().exec((err, categories) => {
+   
+    Category.find({})
+    .sort('description')
+    .populate('user','name email')
+    .exec((err, categories) => {
         if (err) {
-            return res.status(400).json({
+            return res.status(500).json({
                 ok: false,
                 err: err
             });
@@ -25,7 +29,7 @@ app.get('/category/:id', verifyToken, (req, res) => { //show one category by id
     let id = req.params.id;
     Category.findById(id, { context: 'query' }, (err, categoryDB) => {
         if (err) {
-            return res.status(400).json({
+            return res.status(500).json({
                 ok: false,
                 err: err
             });
@@ -46,7 +50,7 @@ app.post('/category', verifyToken, (req, res) => { //create new category
     });
     category.save((err, categoryDB) => {
         if (err) {
-            return res.status(400).json({
+            return res.status(500).json({
                 ok: false,
                 err: err
             });
@@ -65,7 +69,7 @@ app.put('/category/:id', verifyToken, (req, res) => { //update category
 
     Category.findByIdAndUpdate(id, req.body, { new: true, runValidators: true, context: 'query' }, (err, categoryDB) => {
         if (err) {
-            return res.status(400).json({
+            return res.status(500).json({
                 ok: false,
                 err: err
             });
@@ -83,9 +87,17 @@ app.delete('/category/:id', verifyToken, (req, res) => { //update category
 
     Category.findByIdAndRemove(id,(err,categoryDB)=>{
         if (err) {
-            return res.status(400).json({
+            return res.status(500).json({
                 ok: false,
                 err: err
+            });
+        }
+        if(!categoryDB){
+            return res.status(400).json({
+                ok: false,
+                err: {
+                    message: "La categoría no existe"
+                }
             });
         }
         res.json({

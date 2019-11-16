@@ -21,7 +21,7 @@ process.env.urlDB = urlDb;
 /// ==========
 /// Token
 ///===========
-process.env.TOKEN_EXPIRES =  60 * 60 * 24 * 30
+process.env.TOKEN_EXPIRES =  "48h"
 
 /// ==========
 /// Auth seed
