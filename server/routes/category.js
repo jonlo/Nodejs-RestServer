@@ -27,7 +27,7 @@ app.get('/category', verifyToken, (req, res) => { //show all categories
 
 app.get('/category/:id', verifyToken, (req, res) => { //show one category by id
     let id = req.params.id;
-    Category.findById(id, { context: 'query' }, (err, categoryDB) => {
+    Category.findById(id, (err, categoryDB) => {
         if (err) {
             return res.status(500).json({
                 ok: false,
@@ -36,7 +36,7 @@ app.get('/category/:id', verifyToken, (req, res) => { //show one category by id
         }
         res.json({
             ok: true,
-            categpry: categoryDB
+            category: categoryDB
         });
     });
 })
