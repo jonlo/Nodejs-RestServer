@@ -84,7 +84,7 @@ app.post('/google', async (req, res) => {
             err: e
         })
     })
- 
+
     User.findOne({
         email: googleUser.email
     }, (err, userDB) => {

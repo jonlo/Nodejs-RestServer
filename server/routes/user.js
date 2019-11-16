@@ -5,10 +5,10 @@ const _ = require('underscore');
 const app = express()
 const jwt = require('jsonwebtoken');
 
-const {verifyToken} = require ('../middlewares/authentication');
-const {verifyAdminRole} = require ('../middlewares/authentication');
+const { verifyToken } = require('../middlewares/authentication');
+const { verifyAdminRole } = require('../middlewares/authentication');
 
-app.get('/user',verifyToken, (req, res) => {
+app.get('/user', verifyToken, (req, res) => {
     let from = Number(req.query.from ? req.query.from : 0);
     let limit = Number(req.query.limit ? req.query.limit : 10);
 
@@ -41,7 +41,7 @@ app.get('/user',verifyToken, (req, res) => {
 
 })
 
-app.post('/user',[verifyToken,verifyAdminRole], function (req, res) {
+app.post('/user', [verifyToken, verifyAdminRole], function (req, res) {
     let body = req.body;
     let user = new User({
         name: body.name,
@@ -65,13 +65,13 @@ app.post('/user',[verifyToken,verifyAdminRole], function (req, res) {
         res.json({
             ok: true,
             user: userDB,
-            token:token
+            token: token
         });
     });
 
 })
 
-app.put('/user/:id',[verifyToken,verifyAdminRole], function (req, res) {
+app.put('/user/:id', [verifyToken, verifyAdminRole], function (req, res) {
     let id = req.params.id;
     let body = _.pick(req.body, ['name', 'email', 'img', 'role', 'state']);
 
@@ -90,8 +90,8 @@ app.put('/user/:id',[verifyToken,verifyAdminRole], function (req, res) {
 
 });
 
-app.delete('/user/:id',[verifyToken,verifyAdminRole], function (req, res) {
-    
+app.delete('/user/:id', [verifyToken, verifyAdminRole], function (req, res) {
+
     let id = req.params.id;
     let stateDelete = { state: false };
 

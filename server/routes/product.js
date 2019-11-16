@@ -64,3 +64,5 @@ app.delete('/product/:id',verifyToken,(req,res)=>{
 
     
 });
+
+module.exports = app;
