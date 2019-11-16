@@ -5,14 +5,16 @@ const { verifyToken } = require('../middlewares/authentication');
 let app = express();
 let Product = require('../models/product');
 
+let productPath = Product.schema.paths;
+
 app.get('/product', verifyToken, (req, res) => {
     let from = Number(req.query.from ? req.query.from : 0);
     let limit = Number(req.query.limit ? req.query.limit : 10);
     Product.find({ available: true })
         .skip(from)
         .limit(limit)
-        .populate('user', 'name email')
-        .populate('category', 'description')
+        .populate(productPath.user.path, 'name email')
+        .populate(productPath.category.path, 'description')
         .exec((err, products) => {
             if (err) {
                 return res.status(400).json({
