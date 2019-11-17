@@ -6,8 +6,8 @@ const jwt = require('jsonwebtoken')
 
 let verifyToken = (req, res, next) => {
     let token = req.get('token'); // recuperar datos del header
-    jwt.verify(token,process.env.SEED,(err, decoded)=>{
-        if(err){
+    jwt.verify(token, process.env.SEED, (err, decoded) => {
+        if (err) {
             return res.status(401).json({
                 ok: false,
                 err: err
@@ -21,18 +21,34 @@ let verifyToken = (req, res, next) => {
 
 let verifyAdminRole = (req, res, next) => {
     let user = req.user;
-    if(user.role !== 'ADMIN_ROLE'){
+    if (user.role !== 'ADMIN_ROLE') {
         let err = "user should be an admin";
         return res.status(401).json({
             ok: false,
             err: err
         });
-    }else{
+    } else {
         next();
     }
 };
 
+
+let verifyImgToken = (req, res, next) => {
+    let token = req.query.token;
+    jwt.verify(token, process.env.SEED, (err, decoded) => {
+        if (err) {
+            return res.status(401).json({
+                ok: false,
+                err: err
+            });
+        }
+        req.user = decoded.user;
+        next();
+    });
+}
+
 module.exports = {
     verifyToken,
-    verifyAdminRole
+    verifyAdminRole,
+    verifyImgToken
 }
