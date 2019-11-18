@@ -5,7 +5,7 @@ const path = require('path');
 
 let { verifyImgToken } = require('../middlewares/authentication');
 
-app.get('/image/:type/:img',verifyImgToken, (req, res) => {
+app.get('/image/:type/:img', (req, res) => {
     let type = req.params.type;
     let img = req.params.img;
     let pathImg = path.resolve(__dirname, `../../uploads/${type}/${img}`);
