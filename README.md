@@ -1,8 +1,7 @@
 # Nodejs-RestServer
 
-## Tutorial project
+## Template
 
-### Covers:
 
 - Rest server
     - Http routing
